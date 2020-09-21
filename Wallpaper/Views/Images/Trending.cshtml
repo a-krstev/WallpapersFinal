@@ -1,0 +1,16 @@
+﻿@model IEnumerable<Wallpaper.ViewModels.TrendingImageViewModel>
+
+@{
+    ViewBag.Title = "Trending";
+}
+
+<h2>Trending</h2>
+
+<form method="get" action="@Url.Action("Trending")"
+      id="trendingForm" data-w-target="#imageTrendingList">
+
+    @Html.DropDownList("TimeFrame", ViewBag.selectList as SelectList, new { @class = "form-control", id = "ddlTime" })
+    <input type="submit" value="Submit" class="btn btn-default" />
+</form>
+
+@Html.Partial("_TrendingImages", Model)

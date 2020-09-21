@@ -1,0 +1,109 @@
+﻿@model PagedList.IPagedList<Wallpaper.Models.Image>
+@using PagedList.Mvc
+
+<div id="imageList">
+    <span>Sort by: </span>
+
+    <div id="sortLinks" data-w-target="#imageList">
+        @Html.ActionLink("Brand", "Index", new
+        {
+            sortOrder = ViewBag.BrandSortParm,
+            currentFilter = ViewBag.CurrentFilter,
+            currentBrand = ViewBag.CurrentBrand,
+            currentColor = ViewBag.CurrentColor,
+            currentYear = ViewBag.CurrentYear,
+            currentBodyType = ViewBag.CurrentBodyType
+        })
+        @Html.ActionLink("Car Name", "Index", new
+        {
+            sortOrder = ViewBag.NameSortParm,
+            currentFilter = ViewBag.CurrentFilter,
+            currentBrand = ViewBag.CurrentBrand,
+            currentColor = ViewBag.CurrentColor,
+            currentYear = ViewBag.CurrentYear,
+            currentBodyType = ViewBag.CurrentBodyType
+        })
+        @Html.ActionLink("Year", "Index", new
+        {
+            sortOrder = ViewBag.YearSortParm,
+            currentFilter = ViewBag.CurrentFilter,
+            currentBrand = ViewBag.CurrentBrand,
+            currentColor = ViewBag.CurrentColor,
+            currentYear = ViewBag.CurrentYear,
+            currentBodyType = ViewBag.CurrentBodyType
+        })
+        @Html.ActionLink("Color", "Index", new
+        {
+            sortOrder = ViewBag.ColorSortParm,
+            currentFilter = ViewBag.CurrentFilter,
+            currentBrand = ViewBag.CurrentBrand,
+            currentColor = ViewBag.CurrentColor,
+            currentYear = ViewBag.CurrentYear,
+            currentBodyType = ViewBag.CurrentBodyType
+        })
+        @Html.ActionLink("Body Type", "Index", new
+        {
+            sortOrder = ViewBag.BodyTypeSortParm,
+            currentFilter = ViewBag.CurrentFilter,
+            currentBrand = ViewBag.CurrentBrand,
+            currentColor = ViewBag.CurrentColor,
+            currentYear = ViewBag.CurrentYear,
+            currentBodyType = ViewBag.CurrentBodyType
+        })
+    </div>
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4">
+                @{
+                    var imgSrc = String.Format("data:image/gif;base64,{0}", item.ImageEncoding);
+                }
+                @{
+                    bool liked = false, shared = false;
+                    foreach (var action in item.TakenActions)
+                    {
+                        if (action.MyUser.ID == ViewBag.UserId)
+                        {
+                            if (action.Action == Wallpaper.Models.ActionType.Like)
+                            {
+                                liked = true;
+                            }
+                            if (action.Action == Wallpaper.Models.ActionType.Share)
+                            {
+                                shared = true;
+                            }
+                        }
+                    }
+                }
+                <img src="@imgSrc" style="width: 100%;" />
+                @Html.DisplayFor(modelItem => item.BrandId)
+                @Html.DisplayFor(modelItem => item.CarName)
+                @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ID }) |
+                @Html.ActionLink((liked ? "Unike" : "Like"), "Like", new { id = item.ID }, new { @class = "likeIndex" }) |
+                @Html.ActionLink((shared ? "Unshare" : "Share"), "Share", new { id = item.ID }, new { @class = "shareIndex" }) |
+                @Html.ActionLink("Download", "Download", new { id = item.ID })
+            </div>
+        }
+    </div>
+
+    <hr />
+
+    <div class="pagedList" data-w-target="#imageList">
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+        @Html.PagedListPager(Model, page => Url.Action("Index",
+            new
+            {
+                page,
+                sortOrder = ViewBag.CurrentSort,
+                currentFilter = ViewBag.CurrentFilter,
+                currentBrand = ViewBag.CurrentBrand,
+                currentColor = ViewBag.CurrentColor,
+                currentYear = ViewBag.CurrentYear,
+                currentBodyType = ViewBag.CurrentBodyType
+            }))
+    </div>
+</div>

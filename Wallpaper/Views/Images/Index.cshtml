@@ -1,0 +1,36 @@
+﻿@model PagedList.IPagedList<Wallpaper.Models.Image>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+<hr />
+
+<span>Search by category: </span>
+
+<form method="get" id="formId" action="@Url.Action("Index")" data-w-target="#imageList">
+    @Html.DropDownList("Brand", new SelectList(ViewBag.Brands, "Name", "Name", ViewBag.CurrentBrand), " ", new { @class = "form-control", id = "ddlBrand" })
+    @Html.DropDownList("Color", new SelectList(ViewBag.Colors, "Val", "Val", ViewBag.CurrentColor), " ", new { @class = "form-control", id = "ddlColor" })
+    @Html.DropDownList("Year", new SelectList(ViewBag.Years, "Val", "Val", ViewBag.CurrentYear), " ", new { @class = "form-control", id = "ddlYear" })
+    @Html.DropDownList("BodyType", new SelectList(ViewBag.BodyTypes, "Val", "Val", ViewBag.CurrentBodyType), " ", new { @class = "form-control", id = "ddlBodyType" })
+    <input type="submit" value="Filter" class="btn btn-default" />
+</form>
+
+<hr />
+
+<form method="get" action="@Url.Action("Index")"
+      data-w-ajax="true" data-w-target="#imageList">
+    <p>
+        Search: @Html.TextBox("SearchString") <!--, ViewBag.CurrentFilter as string)-->
+        <input type="submit" value="Search" />
+    </p>
+</form>
+
+<hr />
+
+@Html.Partial("_Images", Model)

@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Wallpaper.ViewModels.TrendingImageViewModel>
+
+<div class="row" id="imageTrendingList">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4">
+            @{
+                var imgSrc = String.Format("data:image/gif;base64,{0}", item.Image.ImageEncoding);
+            }
+            @{
+                bool liked = false, shared = false;
+                foreach (var action in item.Image.TakenActions)
+                {
+                    if (action.MyUser.ID == ViewBag.UserId)
+                    {
+                        if (action.Action == Wallpaper.Models.ActionType.Like)
+                        {
+                            liked = true;
+                        }
+                        if (action.Action == Wallpaper.Models.ActionType.Share)
+                        {
+                            shared = true;
+                        }
+                    }
+                }
+            }
+            <img src="@imgSrc" style="width: 100%;" />
+            @Html.DisplayFor(modelItem => item.Image.BrandId)
+            @Html.DisplayFor(modelItem => item.Image.CarName)
+            @Html.ActionLink("Edit", "Edit", new { id = item.Image.ID }) |
+            @Html.ActionLink("Details", "Details", new { id = item.Image.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.Image.ID }) |
+            @Html.ActionLink((liked ? "Unike" : "Like"), "Like", new { id = item.Image.ID, TimeFrame = ViewBag.CurrentTimeFrame }, new { @class = "likeTrending" }) |
+            @Html.ActionLink((shared ? "Unshare" : "Share"), "Share", new { id = item.Image.ID }, new { @class = "shareIndex" }) |
+            @Html.ActionLink("Download", "Download", new { id = item.Image.ID }) | <span>Number of likes: </span>
+            <span class="allLikes">@item.NumberOfLikes</span>
+        </div>
+    }
+</div>

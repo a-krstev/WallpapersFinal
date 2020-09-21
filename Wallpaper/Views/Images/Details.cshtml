@@ -1,0 +1,92 @@
+﻿@model Wallpaper.Models.Image
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+@{
+    var imgSrc = String.Format("data:image/gif;base64,{0}", Model.ImageEncoding);
+    var similarImages = Model.SimilarImages
+        .OrderByDescending(i => i.Score)
+        .Select(i => i.Image2);
+}
+
+<div>
+    <h4>Image</h4>
+    <hr />
+    <img src="@imgSrc" style="width: 300px;" />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Width)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Width)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Height)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Height)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BrandId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BrandId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CarName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CarName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BodyTypeId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BodyTypeId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ColorId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ColorId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.YearId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.YearId)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+<span>Similar images: </span>
+<hr />
+
+@foreach (var image in similarImages)
+{
+    var imageSrc = String.Format("data:image/gif;base64,{0}", image.ImageEncoding);
+    <img src="@imageSrc" style="width: 300px;" />
+    <span>@image.BrandId, @image.CarName</span>
+}
