@@ -123,7 +123,7 @@ namespace Wallpaper.Controllers
             }
 
             ViewBag.UserId = CurrentUser().ID;
-            int pageSize = 3;
+            int pageSize = 6;
             int pageNumber = (page ?? 1);
 
             var model = Images.ToPagedList(pageNumber, pageSize);

@@ -1,0 +1,66 @@
+﻿body {
+}
+
+.row.display-flex {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.thumbnail {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.thumbnail .caption {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.col-md-4 {
+    margin-bottom: 10px;
+}
+
+.caption h3 {
+    margin-top: 0;
+}
+
+.is-liked-shared {
+    color: rgb(51, 122, 183);
+}
+
+div a.socialActions {
+    letter-spacing: 1px;
+    font-size: 170%;
+    color: darkslategray;
+}
+
+div a.socialActions:hover,
+div a.socialActions:focus {
+    color: rgb(51, 122, 183);
+}
+
+div.siteActions {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+#sortLinks {
+    margin-bottom: 10px;
+}
+
+#sortLinks a {
+    margin: auto 5px;
+}
+
+#sortLinks h4 {
+    display: inline-block;
+    margin: auto 1px;
+}
+
+#homeCreate {
+
+}

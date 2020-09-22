@@ -131,7 +131,8 @@
         };
 
         $.ajax(options).done(function () {
-            $a.text(($a.text() == "Like" ? "Unlike" : "Like"));
+            $a.children("i").toggleClass("is-liked-shared");
+            $a.blur();
         });
 
         return false;
@@ -147,7 +148,8 @@
         };
 
         $.ajax(options).done(function () {
-            $a.text(($a.text() == "Share" ? "Unshare" : "Share"));
+            $a.children("i").toggleClass("is-liked-shared");
+            $a.blur();
         });
 
         return false;
