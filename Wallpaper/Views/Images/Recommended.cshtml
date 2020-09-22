@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Wallpaper.Models.Image>
+﻿@model PagedList.IPagedList<Wallpaper.Models.Image>
 
 @{
     ViewBag.Title = "Recommended";
@@ -6,35 +6,36 @@
 
 <h2>Recommended</h2>
 
-@foreach (var item in Model)
-{
-    var imgSrc = String.Format("data:image/gif;base64,{0}", item.ImageEncoding);
-    bool liked = false, shared = false;
-    foreach (var action in item.TakenActions)
-    {
-        if (action.MyUser.ID == ViewBag.UserId)
-        {
-            if (action.Action == Wallpaper.Models.ActionType.Like)
-            {
-                liked = true;
+<div id="wrap">
+    @Html.Partial("_TRImages", Model)
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var working = false;
+            var page = 2;
+
+            function yHandler() {
+                var wrap = document.getElementById('wrap');
+                var contentHeight = wrap.offsetHeight / 2; // Gets page content height
+                var yOffset = window.pageYOffset; // Gets the vertical scroll position
+                var y = yOffset + window.innerHeight;
+                if (y >= contentHeight) {
+                    if (page <= @ViewBag.PageCount && working == false) {
+                        working = true;
+                        console.log(page);
+                        $.get('/Images/Recommended?page=' + page, function (data) {
+                            wrap.innerHTML += data;
+                            page++;
+                            setTimeout(function () {
+                                working = false
+                            }, 2500);
+                        });
+                    }
+                }
             }
-            if (action.Action == Wallpaper.Models.ActionType.Share)
-            {
-                shared = true;
-            }
-        }
-    }
-    <div class="row">
-        <div class="col-md-offset-3 col-md-6">
-            <img src="@imgSrc" style="max-height: 300px;" />
-            @Html.DisplayFor(modelItem => item.BrandId)
-            @Html.DisplayFor(modelItem => item.CarName)
-            @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id = item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.ID }) |
-            @Html.ActionLink((liked ? "Unike" : "Like"), "Like", new { id = item.ID }, new { @class = "likeIndex" }) |
-            @Html.ActionLink((shared ? "Unshare" : "Share"), "Share", new { id = item.ID }, new { @class = "shareIndex" }) |
-            @Html.ActionLink("Download", "Download", new { id = item.ID })
-        </div>
-    </div>
+            window.onscroll = yHandler;
+        });
+    </script>
 }

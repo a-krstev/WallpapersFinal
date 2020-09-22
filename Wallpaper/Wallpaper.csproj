@@ -399,6 +399,8 @@
     <Content Include="Views\Images\Recommended.cshtml" />
     <Content Include="Views\Images\_Images.cshtml" />
     <Content Include="Views\Images\_TrendingImages.cshtml" />
+    <Content Include="Views\Account\_SharedImages.cshtml" />
+    <Content Include="Views\Images\_TRImages.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

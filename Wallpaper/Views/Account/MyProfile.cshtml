@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Wallpaper.Models.Image>
+﻿@model PagedList.IPagedList<Wallpaper.Models.Image>
 
 @{
     ViewBag.Title = "My Profile";
@@ -6,32 +6,36 @@
 
 <h2>My Profile</h2>
 
-<div class="row">
-    @foreach (var item in Model)
-    {
-        <div class="col-md-4">
-            @{
-                var imgSrc = String.Format("data:image/gif;base64,{0}", item.ImageEncoding);
-            }
-            @{
-                bool liked = false;
-                foreach (var action in item.TakenActions)
-                {
-                    if (action.MyUser.ID == ViewBag.UserId)
-                    {
-                        if (action.Action == Wallpaper.Models.ActionType.Like)
-                        {
-                            liked = true;
-                        }
+<div id="wrap">
+    @Html.Partial("_SharedImages", Model)
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var working = false;
+            var page = 2;
+
+            function yHandler() {
+                var wrap = document.getElementById('wrap');
+                var contentHeight = wrap.offsetHeight / 2; // Gets page content height
+                var yOffset = window.pageYOffset; // Gets the vertical scroll position
+                var y = yOffset + window.innerHeight;
+                if (y >= contentHeight) {
+                    if (page <= @ViewBag.PageCount && working == false) {
+                        working = true;
+                        console.log(page);
+                        $.get('/Account/MyProfile?page=' + page, function (data) {
+                            wrap.innerHTML += data;
+                            page++;
+                            setTimeout(function () {
+                                working = false
+                            }, 2500);
+                        });
                     }
                 }
             }
-            <img src="@imgSrc" style="width: 100%;" />
-            @Html.DisplayFor(modelItem => item.BrandId)
-            @Html.DisplayFor(modelItem => item.CarName)
-            @Html.ActionLink("Details", "Details", new { id = item.ID }) |
-            @Html.ActionLink((liked ? "Unike" : "Like"), "Like", new { id = item.ID }) |
-            @Html.ActionLink("Unshare", "Share", new { id = item.ID })
-        </div>
-    }
-</div>
+            window.onscroll = yHandler;
+        });
+    </script>
+}

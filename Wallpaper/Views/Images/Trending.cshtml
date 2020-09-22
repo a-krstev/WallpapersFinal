@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Wallpaper.ViewModels.TrendingImageViewModel>
+﻿@model PagedList.IPagedList<Wallpaper.ViewModels.TrendingImageViewModel>
 
 @{
     ViewBag.Title = "Trending";
@@ -13,4 +13,65 @@
     <input type="submit" value="Submit" class="btn btn-default" />
 </form>
 
-@Html.Partial("_TrendingImages", Model)
+<div id="imageTrendingList">
+    @Html.Partial("_TrendingImages", Model)
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var working = false;
+            var page = 2;
+            var currentTime = $("#ddlTime").val();
+
+            $("#trendingForm").submit(function () {
+                var $form = $(this);
+                var selectedTimeFrame = $("#ddlTime").val();
+                currentTime = selectedTimeFrame;
+
+                var options = {
+                    url: $form.attr("action"),
+                    type: $form.attr("method")
+                };
+
+                if (selectedTimeFrame != "") {
+                    options.data = $form.serialize();
+                }
+
+                $.ajax(options).done(function (data) {
+                    var $target = $($form.attr("data-w-target"));
+                    data = '<div id="imageTrendingList">' + data + "</div>";
+                    $target.replaceWith(data);
+                    page = 2;
+                });
+
+                return false;
+            });
+
+            function yHandler() {
+                var wrap = document.getElementById('imageTrendingList');
+                var contentHeight = wrap.offsetHeight / 2; // Gets page content height
+                var yOffset = window.pageYOffset; // Gets the vertical scroll position
+                var y = yOffset + window.innerHeight;
+                //console.log($("p:hidden").first().text());
+                if (y >= contentHeight) {
+                    var pageCount = parseInt($("p:hidden").first().text());
+                    //console.log(pageCount);
+                    if (page <= pageCount && working == false) {
+                        working = true;
+                        var timeFrame = "&TimeFrame=" + currentTime;
+                        //console.log(page);
+                        $.get('/Images/Trending?page=' + page + timeFrame, function (data) {
+                            wrap.innerHTML += data;
+                            page++;
+                            setTimeout(function () {
+                                working = false
+                            }, 2500);
+                        });
+                    }
+                }
+            }
+            window.onscroll = yHandler;
+        });
+    </script>
+}

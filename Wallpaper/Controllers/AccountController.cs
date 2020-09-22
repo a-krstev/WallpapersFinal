@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Wallpaper.Models;
+using PagedList;
 
 namespace Wallpaper.Controllers
 {
@@ -33,17 +34,34 @@ namespace Wallpaper.Controllers
         }
 
         //GET: Account/MyProfile
-        public ActionResult MyProfile()
+        public ActionResult MyProfile(int? page)
         {
+            // return a 404 if user browses to before the first page
+            if (page.HasValue && page < 1)
+            {
+                return HttpNotFound();
+            }
+
             var currentUser = CurrentUser();
             ViewBag.UserId = currentUser.ID;
             var model = currentUser.Actions
                 .Where(a => a.Action == ActionType.Share)
                 .OrderByDescending(a => a.Time)
-                .Select(a => a.Image)
-                .ToList();
+                .Select(a => a.Image);
 
-            return View(model);
+            var listPaged = model.ToPagedList(page ?? 1, 3); //change to 5 per load probably or more
+            ViewBag.PageCount = listPaged.PageCount;
+
+            if (listPaged.PageNumber != 1 && page.HasValue && page > listPaged.PageCount)
+            {
+                return HttpNotFound();
+            }
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("_SharedImages", listPaged);
+            }
+            return View(listPaged);
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )

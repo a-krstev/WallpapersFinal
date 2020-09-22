@@ -99,6 +99,7 @@
         return false;
     });
 
+    /*
     $("#trendingForm").submit(function () {
         var $form = $(this);
         var selectedTimeFrame = $("#ddlTime").val();
@@ -118,7 +119,7 @@
         });
 
         return false;
-    });
+    });*/
 
     //Toggling like in main page
     $(document).on("click", "a.likeIndex", function () {

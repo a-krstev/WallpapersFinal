@@ -618,9 +618,15 @@ namespace Wallpaper.Controllers
                 new SelectListItem { Text = "ever", Value = "ever" }
             }, "Text", "Value");
 
-        public ActionResult Trending(string TimeFrame)
+        public ActionResult Trending(string TimeFrame, int? page)
         {
             DateTime time = DateTime.Now;
+
+            // return a 404 if user browses to before the first page
+            if (page.HasValue && page < 1)
+            {
+                return HttpNotFound();
+            }
 
             ViewBag.CurrentTimeFrame = TimeFrame;
             ViewBag.selectList = TrendingSelectList;
@@ -639,11 +645,20 @@ namespace Wallpaper.Controllers
                 .OrderByDescending(i => i.NumberOfLikes);
 
             ViewBag.UserId = CurrentUser().ID;
+
+            var listPaged = temp.ToPagedList(page ?? 1, 3); //change to 5 items per load
+            ViewBag.PageCount = listPaged.PageCount;
+
+            if (listPaged.PageNumber != 1 && page.HasValue && page > listPaged.PageCount)
+            {
+                return HttpNotFound();
+            }
+
             if (Request.IsAjaxRequest())
             {
-                return PartialView("_TrendingImages", temp);
+                return PartialView("_TrendingImages", listPaged);
             }
-            return View(temp);
+            return View(listPaged);
         }
 
         private double aggregateUserActions(IEnumerable<UserAction> actions)
@@ -654,8 +669,14 @@ namespace Wallpaper.Controllers
             return aggregateViews + aggregateOtherActions;
         }
 
-        public ActionResult Recommended()
+        public ActionResult Recommended(int? page)
         {
+            // return a 404 if user browses to before the first page
+            if (page.HasValue && page < 1)
+            {
+                return HttpNotFound();
+            }
+
             MyUser myUser = CurrentUser();
             var Images = myUser.Actions
                 .GroupBy(ua => ua.Image.ID)
@@ -678,9 +699,22 @@ namespace Wallpaper.Controllers
                 }))
                 .OrderByDescending(a => a.Score)
                 .DistinctBy(a => a.Image2.ID)
-                .Select(a => a.Image2);
+                .Select(a => a.Image2)
+                .ToList();
 
-            return View(Images);
+            var listPaged = Images.ToPagedList(page ?? 1, 4); //change to 5 items per load
+            ViewBag.PageCount = listPaged.PageCount;
+
+            if (listPaged.PageNumber != 1 && page.HasValue && page > listPaged.PageCount)
+            {
+                return HttpNotFound();
+            }
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("_TRImages", listPaged);
+            }
+            return View(listPaged);
         }
 
         protected override void Dispose(bool disposing)
