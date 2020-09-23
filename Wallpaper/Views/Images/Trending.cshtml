@@ -4,14 +4,22 @@
     ViewBag.Title = "Trending";
 }
 
-<h2>Trending</h2>
-
 <form method="get" action="@Url.Action("Trending")"
       id="trendingForm" data-w-target="#imageTrendingList">
 
-    @Html.DropDownList("TimeFrame", ViewBag.selectList as SelectList, new { @class = "form-control", id = "ddlTime" })
-    <input type="submit" value="Submit" class="btn btn-default" />
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <h2>Trending</h2>
+            <div class="form-group">
+                <label for="ddlTime">Select time frame:</label>
+                @Html.DropDownList("TimeFrame", ViewBag.selectList as SelectList, new { @class = "form-control", id = "ddlTime" })
+            </div>
+            <input type="submit" value="Submit" class="btn btn-default" />
+        </div>
+    </div>
 </form>
+
+<hr />
 
 <div id="imageTrendingList">
     @Html.Partial("_TrendingImages", Model)

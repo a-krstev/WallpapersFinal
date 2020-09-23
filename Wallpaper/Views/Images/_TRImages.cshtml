@@ -1,5 +1,12 @@
 ﻿@model PagedList.IPagedList<Wallpaper.Models.Image>
 
+@functions{
+    public string GetStatus(bool isLikedOrShared)
+    {
+        return isLikedOrShared ? "is-liked-shared" : "";
+    }
+}
+
 @foreach (var item in Model)
 {
     var imgSrc = String.Format("data:image/gif;base64,{0}", item.ImageEncoding);
@@ -20,15 +27,24 @@
     }
     <div class="row">
         <div class="col-md-offset-3 col-md-6">
-            <img src="@imgSrc" style="max-height: 300px;" />
-            @Html.DisplayFor(modelItem => item.BrandId)
-            @Html.DisplayFor(modelItem => item.CarName)
-            @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id = item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.ID }) |
-            @Html.ActionLink((liked ? "Unike" : "Like"), "Like", new { id = item.ID }, new { @class = "likeIndex" }) |
-            @Html.ActionLink((shared ? "Unshare" : "Share"), "Share", new { id = item.ID }, new { @class = "shareIndex" }) |
-            @Html.ActionLink("Download", "Download", new { id = item.ID })
+            <div class="thumbnail">
+                <img src="@imgSrc" />
+                <div class="caption">
+                    <h3>@Html.DisplayFor(modelItem => item.BrandId) @Html.DisplayFor(modelItem => item.CarName)</h3>
+                    <div class="siteActions">
+                        <p>
+                            <a class="socialActions" href="@Url.Action("Download", new { id = item.ID })"><i class="fa fa-fw fa-download"></i></a>
+                            <a class="likeIndex socialActions" href="@Url.Action("Like", new { id = item.ID })"><i class="fa fa-fw fa-heart @GetStatus(liked)"></i></a>
+                            <a class="shareIndex socialActions" href="@Url.Action("Share", new { id = item.ID })"><i class="fa fa-fw fa-share @GetStatus(shared)"></i></a>
+                        </p>
+                        <p>
+                            @Html.ActionLink("Details", "Details", new { id = item.ID }, new { @class = "btn btn-primary" })
+                            @Html.ActionLink("Edit", "Edit", new { id = item.ID }, new { @class = "btn btn-primary" })
+                            @Html.ActionLink("Delete", "Delete", new { id = item.ID }, new { @class = "btn btn-primary" })
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 }

@@ -165,7 +165,9 @@
         };
 
         $.ajax(options).done(function (data) {
-            $a.text(($a.text() == "Like" ? "Unlike" : "Like"));
+            //$a.text(($a.text() == "Like" ? "Unlike" : "Like"));
+            $a.children("i").toggleClass("is-liked-shared");
+            $a.blur();
             $a.siblings(".allLikes").text(data);
         });
 

@@ -1,82 +1,82 @@
 ﻿@model Wallpaper.ViewModels.ImageInputViewModel
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Edit";
     var imgSrc = String.Format("data:image/gif;base64,{0}", Model.Image.ImageEncoding);
 }
 
-<h2>Create</h2>
-
+<h2>Edit</h2>
+<hr />
 
 @using (Html.BeginForm(Html.BeginForm("Edit", "Images", FormMethod.Post, new { enctype = "multipart/form-data" })))
 {
-    <div class="form-horizontal">
-        <h4>Image</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="row" style="display: flex;">
+        <div class="col-md-7">
+            <div class="form-horizontal">
+                @Html.HiddenFor(model => model.Image.ID)
+                @Html.HiddenFor(model => model.Image.Width)
+                @Html.HiddenFor(model => model.Image.Height)
+                @Html.HiddenFor(model => model.Image.ImageExtension)
 
-        @Html.HiddenFor(model => model.Image.ID)
-        @Html.HiddenFor(model => model.Image.Width)
-        @Html.HiddenFor(model => model.Image.Height)
-        @Html.HiddenFor(model => model.Image.ImageExtension)
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Image.BrandId, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Image.BrandId, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Image.BrandId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Image.BrandId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Image.BrandId, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Image.BrandId, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Image.CarName, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Image.CarName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Image.CarName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Image.BodyTypeId, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Image.BodyTypeId, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Image.ColorId, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Image.ColorId, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Image.YearId, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Image.YearId, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="file" class="control-label col-md-2">Image</label>
+                    <div class="col-md-10">
+                        <input type="file" name="ImageFile" id="imgInp" class="form-control" style="width: 100%;" />
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-left: 18.7em;">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Edit" class="btn btn-primary" />
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Image.CarName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Image.CarName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Image.CarName, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Image.BodyTypeId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Image.BodyTypeId, new { htmlAttributes = new { @class = "form-control" } })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Image.ColorId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Image.ColorId, new { htmlAttributes = new { @class = "form-control" } })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Image.YearId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Image.YearId, new { htmlAttributes = new { @class = "form-control" } })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="file" class="control-label col-md-2">Upload Image:</label>
-            <div class="col-md-10">
-                <input type="file" name="ImageFile" id="imgInp" class="form-control" style="width: 100%;" />
-            </div>
-            <div class="col-md-4">
-                <img id="imgId" src="@imgSrc" style="max-width: 300px;" />
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
+        <div class="col-md-5" style="border: 1px dotted gray; border-radius: 5px; display: flex; align-items: center; justify-content: center;">
+            <img id="imgId" src="@imgSrc" style="max-width: 100%; height: auto;" />
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index", "Images")
+    @Html.ActionLink("Back to List", "Index", "Images", new { @class = "btn btn-default" })
 </div>
 
 @section Scripts {

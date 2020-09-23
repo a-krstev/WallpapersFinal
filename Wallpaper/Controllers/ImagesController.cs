@@ -445,7 +445,7 @@ namespace Wallpaper.Controllers
 
                 foreach (Image image in Images)
                 {
-                    var tmp1 = db.Similars.Single(s => s.Image1Id == img.ID && s.Image2Id == image.ID);
+                    var tmp1 = db.Similars.SingleOrDefault(s => s.Image1Id == img.ID && s.Image2Id == image.ID);
                     if (tmp1 != null)
                     {
 

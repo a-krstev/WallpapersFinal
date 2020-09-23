@@ -1,41 +1,53 @@
 ﻿@model PagedList.IPagedList<Wallpaper.ViewModels.TrendingImageViewModel>
 
+@functions{
+    public string GetStatus(bool isLikedOrShared)
+    {
+        return isLikedOrShared ? "is-liked-shared" : "";
+    }
+}
+
 <p hidden>@ViewBag.PageCount</p>
 
 @foreach (var item in Model)
 {
+    var imgSrc = String.Format("data:image/gif;base64,{0}", item.Image.ImageEncoding);
+    bool liked = false, shared = false;
+    foreach (var action in item.Image.TakenActions)
+    {
+        if (action.MyUser.ID == ViewBag.UserId)
+        {
+            if (action.Action == Wallpaper.Models.ActionType.Like)
+            {
+                liked = true;
+            }
+            if (action.Action == Wallpaper.Models.ActionType.Share)
+            {
+                shared = true;
+            }
+        }
+    }
     <div class="row">
         <div class="col-md-offset-3 col-md-6">
-            @{
-                var imgSrc = String.Format("data:image/gif;base64,{0}", item.Image.ImageEncoding);
-            }
-            @{
-                bool liked = false, shared = false;
-                foreach (var action in item.Image.TakenActions)
-                {
-                    if (action.MyUser.ID == ViewBag.UserId)
-                    {
-                        if (action.Action == Wallpaper.Models.ActionType.Like)
-                        {
-                            liked = true;
-                        }
-                        if (action.Action == Wallpaper.Models.ActionType.Share)
-                        {
-                            shared = true;
-                        }
-                    }
-                }
-            }
-            <img src="@imgSrc" style="width: 100%;" />
-            @Html.DisplayFor(modelItem => item.Image.BrandId)
-            @Html.DisplayFor(modelItem => item.Image.CarName)
-            @Html.ActionLink("Edit", "Edit", new { id = item.Image.ID }) |
-            @Html.ActionLink("Details", "Details", new { id = item.Image.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.Image.ID }) |
-            @Html.ActionLink((liked ? "Unike" : "Like"), "Like", new { id = item.Image.ID, TimeFrame = ViewBag.CurrentTimeFrame }, new { @class = "likeTrending" }) |
-            @Html.ActionLink((shared ? "Unshare" : "Share"), "Share", new { id = item.Image.ID }, new { @class = "shareIndex" }) |
-            @Html.ActionLink("Download", "Download", new { id = item.Image.ID }) | <span>Number of likes: </span>
-            <span class="allLikes">@item.NumberOfLikes</span>
+            <div class="thumbnail">
+                <img src="@imgSrc" />
+                <div class="caption">
+                    <h3>@Html.DisplayFor(modelItem => item.Image.BrandId) @Html.DisplayFor(modelItem => item.Image.CarName)</h3>
+                    <div class="siteActions">
+                        <p>
+                            <a class="socialActions" href="@Url.Action("Download", new { id = item.Image.ID })"><i class="fa fa-fw fa-download"></i></a>
+                            <a class="likeTrending socialActions" href="@Url.Action("Like", new { id = item.Image.ID, TimeFrame = ViewBag.CurrentTimeFrame })"><i class="fa fa-fw fa-heart @GetStatus(liked)"></i></a>
+                            <a class="shareIndex socialActions" href="@Url.Action("Share", new { id = item.Image.ID })"><i class="fa fa-fw fa-share @GetStatus(shared)"></i></a>
+                            <span style="font-size: 1.5em;">Number of likes: </span><span class="allLikes" style="font-size: 1.5em;">@item.NumberOfLikes</span>
+                        </p>
+                        <p>
+                            @Html.ActionLink("Details", "Details", new { id = item.Image.ID }, new { @class = "btn btn-primary" })
+                            @Html.ActionLink("Edit", "Edit", new { id = item.Image.ID }, new { @class = "btn btn-primary" })
+                            @Html.ActionLink("Delete", "Delete", new { id = item.Image.ID }, new { @class = "btn btn-primary" })
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 }

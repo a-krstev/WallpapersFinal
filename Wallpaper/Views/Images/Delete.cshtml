@@ -2,77 +2,76 @@
 
 @{
     ViewBag.Title = "Delete";
+    var imgSrc = String.Format("data:image/gif;base64,{0}", Model.ImageEncoding);
 }
 
 <h2>Delete</h2>
 
 <h3>Are you sure you want to delete this?</h3>
+<hr />
 <div>
-    <h4>Image</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Width)
-        </dt>
+    <div class="row" style="display: flex;">
+        <div class="col-md-8">
+            <img src="@imgSrc" style="max-width: 100%; height: auto;" class="img-rounded" />
+        </div>
+        <div class="col-md-4" id="detailsInfo">
+            <dl style="font-size: 1.4em;">
+                <dt>
+                    @Html.DisplayNameFor(model => model.BrandId)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.BrandId)
+                </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Width)
-        </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.CarName)
+                </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Height)
-        </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.CarName)
+                </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Height)
-        </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.BodyTypeId)
+                </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.BrandId)
-        </dt>
+                <dd>
+                    @(String.IsNullOrEmpty(Model.BodyTypeId) ? "unknown" : Model.BodyTypeId)
+                </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.BrandId)
-        </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.ColorId)
+                </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CarName)
-        </dt>
+                <dd>
+                    @(String.IsNullOrEmpty(Model.ColorId) ? "unknown" : Model.ColorId)
+                </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.CarName)
-        </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.YearId)
+                </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.BodyTypeId)
-        </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.YearId)
+                </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.BodyTypeId)
-        </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Size)
+                </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.ColorId)
-        </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Size)
+                </dd>
+            </dl>
+        </div>
+    </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.ColorId)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.YearId)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.YearId)
-        </dd>
-
-    </dl>
+    <br />
 
     @using (Html.BeginForm()) {
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            <input type="submit" value="Delete" class="btn btn-primary" />
+            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
         </div>
     }
 </div>

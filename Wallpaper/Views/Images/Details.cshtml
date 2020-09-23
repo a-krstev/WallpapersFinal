@@ -2,91 +2,148 @@
 
 @{
     ViewBag.Title = "Details";
+    var imgSrc = String.Format("data:image/gif;base64,{0}", Model.ImageEncoding);
+    var similarImages = Model.SimilarImages
+        .OrderByDescending(i => i.Score)
+        .Take(3)
+        .Select(i => i.Image2);
+
+    bool liked = false, shared = false;
+    foreach (var action in Model.TakenActions)
+    {
+        if (action.MyUser.ID == ViewBag.UserId)
+        {
+            if (action.Action == Wallpaper.Models.ActionType.Like)
+            {
+                liked = true;
+            }
+            if (action.Action == Wallpaper.Models.ActionType.Share)
+            {
+                shared = true;
+            }
+        }
+    }
+}
+
+@functions{
+    public string GetStatus(bool isLikedOrShared)
+    {
+        return isLikedOrShared ? "is-liked-shared" : "";
+    }
 }
 
 <h2>Details</h2>
 
-@{
-    var imgSrc = String.Format("data:image/gif;base64,{0}", Model.ImageEncoding);
-    var similarImages = Model.SimilarImages
-        .OrderByDescending(i => i.Score)
-        .Select(i => i.Image2);
-}
+<div class="row" style="display: flex;">
+    <div class="col-md-8">
+        <img src="@imgSrc" style="max-width: 100%; height: auto;" class="img-rounded"/>
+    </div>
+    <div class="col-md-4" id="detailsInfo">
+        <dl style="font-size: 1.4em;">
+            <dt>
+                @Html.DisplayNameFor(model => model.BrandId)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.BrandId)
+            </dd>
 
-<div>
-    <h4>Image</h4>
-    <hr />
-    <img src="@imgSrc" style="width: 300px;" />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Width)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.CarName)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Width)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.CarName)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Height)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.BodyTypeId)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Height)
-        </dd>
+            <dd>
+                @(String.IsNullOrEmpty(Model.BodyTypeId) ? "unknown" : Model.BodyTypeId)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.BrandId)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.ColorId)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.BrandId)
-        </dd>
+            <dd>
+                @(String.IsNullOrEmpty(Model.ColorId) ? "unknown" : Model.ColorId)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CarName)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.YearId)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.CarName)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.YearId)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.BodyTypeId)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.Size)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.BodyTypeId)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ColorId)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ColorId)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.YearId)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.YearId)
-        </dd>
-
-    </dl>
+            <dd>
+                @Html.DisplayFor(model => model.Size)
+            </dd>
+        </dl>
+        <div class="siteActions" style="margin-bottom: 0;">
+            <p>
+                <a class="socialActions" href="@Url.Action("Download", new { id = Model.ID })"><i class="fa fa-fw fa-download"></i></a>
+                <a class="likeIndex socialActions" href="@Url.Action("Like", new { id = Model.ID })"><i class="fa fa-fw fa-heart @GetStatus(liked)"></i></a>
+                <a class="shareIndex socialActions" href="@Url.Action("Share", new { id = Model.ID })"><i class="fa fa-fw fa-share @GetStatus(shared)"></i></a>
+            </p>
+            <p>
+                @Html.ActionLink("Edit", "Edit", new { id = Model.ID }, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+            </p>
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
 
-<span>Similar images: </span>
 <hr />
 
-@foreach (var image in similarImages)
-{
-    var imageSrc = String.Format("data:image/gif;base64,{0}", image.ImageEncoding);
-    <img src="@imageSrc" style="width: 300px;" />
-    <span>@image.BrandId, @image.CarName</span>
-}
+<h3>Similar images: </h3>
+<div class="row display-flex">
+    @foreach (var item in similarImages)
+    {
+        var imgSrc1 = String.Format("data:image/gif;base64,{0}", item.ImageEncoding);
+        bool liked1 = false, shared1 = false;
+        foreach (var action in item.TakenActions)
+        {
+            if (action.MyUser.ID == ViewBag.UserId)
+            {
+                if (action.Action == Wallpaper.Models.ActionType.Like)
+                {
+                    liked = true;
+                }
+                if (action.Action == Wallpaper.Models.ActionType.Share)
+                {
+                    shared = true;
+                }
+            }
+        }
+
+        <div class="col-md-4">
+            <div class="thumbnail">
+                <img src="@imgSrc1" />
+                <div class="caption">
+                    <h3>@Html.DisplayFor(modelItem => item.BrandId) @Html.DisplayFor(modelItem => item.CarName)</h3>
+                    <div class="siteActions">
+                        <p>
+                            <a class="socialActions" href="@Url.Action("Download", new { id = item.ID })"><i class="fa fa-fw fa-download"></i></a>
+                            <a class="likeIndex socialActions" href="@Url.Action("Like", new { id = item.ID })"><i class="fa fa-fw fa-heart @GetStatus(liked1)"></i></a>
+                            <a class="shareIndex socialActions" href="@Url.Action("Share", new { id = item.ID })"><i class="fa fa-fw fa-share @GetStatus(shared1)"></i></a>
+                        </p>
+                        <p>
+                            @Html.ActionLink("Details", "Details", new { id = item.ID }, new { @class = "btn btn-primary" })
+                            @Html.ActionLink("Edit", "Edit", new { id = item.ID }, new { @class = "btn btn-primary" })
+                            @Html.ActionLink("Delete", "Delete", new { id = item.ID }, new { @class = "btn btn-primary" })
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+</div>
