@@ -64,17 +64,21 @@
         {
             var imgSrc = String.Format("data:image/gif;base64,{0}", item.ImageEncoding);
             bool liked = false, shared = false;
-            foreach (var action in item.TakenActions)
+
+            if (User.Identity.IsAuthenticated)
             {
-                if (action.MyUser.ID == ViewBag.UserId)
+                foreach (var action in item.TakenActions)
                 {
-                    if (action.Action == Wallpaper.Models.ActionType.Like)
+                    if (action.MyUser.ID == ViewBag.UserId)
                     {
-                        liked = true;
-                    }
-                    if (action.Action == Wallpaper.Models.ActionType.Share)
-                    {
-                        shared = true;
+                        if (action.Action == Wallpaper.Models.ActionType.Like)
+                        {
+                            liked = true;
+                        }
+                        if (action.Action == Wallpaper.Models.ActionType.Share)
+                        {
+                            shared = true;
+                        }
                     }
                 }
             }
@@ -90,9 +94,12 @@
                                 <a class="shareIndex socialActions" href="@Url.Action("Share", new { id = item.ID })"><i class="fa fa-fw fa-share @GetStatus(shared)"></i></a>
                             </p>
                             <p>
-                                @Html.ActionLink("Details", "Details", new { id = item.ID }, new { @class = "btn btn-primary" })
-                                @Html.ActionLink("Edit", "Edit", new { id = item.ID }, new { @class = "btn btn-primary" })
-                                @Html.ActionLink("Delete", "Delete", new { id = item.ID }, new { @class = "btn btn-primary" })
+                                @Html.ActionLink("Details", "Details", new { id = item.ID }, new { @class = "btn btn-primary" })<text>&nbsp;</text>
+                                @if (User.IsInRole("Administrator"))
+                                {
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.ID }, new { @class = "btn btn-primary" })<text>&nbsp;</text>
+                                    @Html.ActionLink("Delete", "Delete", new { id = item.ID }, new { @class = "btn btn-primary" })
+                                }
                             </p>
                         </div>
                     </div>

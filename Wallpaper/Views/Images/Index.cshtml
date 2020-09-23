@@ -6,9 +6,12 @@
 
 <div id="homeCreate">
     <a href="@Url.Action("Index")"><h2 style="display: inline-block;">Home</h2></a>
-    <div style="display: inline-block;">
-        @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-default" })
-    </div>
+    @if (User.IsInRole("Administrator"))
+    {
+        <div style="display: inline-block;">
+            @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-default" })
+        </div>
+    }
 </div>
 
 <hr />

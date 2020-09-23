@@ -10,7 +10,7 @@ namespace Wallpaper.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Images");
         }
 
         public ActionResult About()

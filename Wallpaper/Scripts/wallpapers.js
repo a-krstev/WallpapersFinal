@@ -21,7 +21,6 @@
 
         var options = {
             url: $a.attr("href"),
-            //data: $("form").serialize(),
             type: "get"
         };
 
@@ -99,28 +98,6 @@
         return false;
     });
 
-    /*
-    $("#trendingForm").submit(function () {
-        var $form = $(this);
-        var selectedTimeFrame = $("#ddlTime").val();
-
-        var options = {
-            url: $form.attr("action"),
-            type: $form.attr("method")
-        };
-
-        if (selectedTimeFrame != "") {
-            options.data = $form.serialize();
-        }
-
-        $.ajax(options).done(function (data) {
-            var $target = $($form.attr("data-w-target"));
-            $target.replaceWith(data);
-        });
-
-        return false;
-    });*/
-
     //Toggling like in main page
     $(document).on("click", "a.likeIndex", function () {
         var $a = $(this);
@@ -165,7 +142,6 @@
         };
 
         $.ajax(options).done(function (data) {
-            //$a.text(($a.text() == "Like" ? "Unlike" : "Like"));
             $a.children("i").toggleClass("is-liked-shared");
             $a.blur();
             $a.siblings(".allLikes").text(data);

@@ -18,14 +18,21 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Application name", "Index", "Images", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Images")</li>
                     <li>@Html.ActionLink("Trending", "Trending", "Images")</li>
-                    <li>@Html.ActionLink("Recommended", "Recommended", "Images")</li>
-                    <li>@Html.ActionLink("My Shared Images", "MyProfile", "Account")</li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li>@Html.ActionLink("Recommended", "Recommended", "Images")</li>
+                        <li>@Html.ActionLink("My Shared Images", "MyProfile", "Account")</li>
+                        if (User.IsInRole("Administrator"))
+                        {
+                            <li>@Html.ActionLink("Add role to user", "AddUserToRole", "Account")</li>
+                        }
+                    }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

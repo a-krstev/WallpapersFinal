@@ -33,14 +33,17 @@
                     <h3>@Html.DisplayFor(modelItem => item.BrandId) @Html.DisplayFor(modelItem => item.CarName)</h3>
                     <div class="siteActions">
                         <p>
-                            <a class="socialActions" href="@Url.Action("Download", new { id = item.ID })"><i class="fa fa-fw fa-download"></i></a>
-                            <a class="likeIndex socialActions" href="@Url.Action("Like", new { id = item.ID })"><i class="fa fa-fw fa-heart @GetStatus(liked)"></i></a>
-                            <a class="shareIndex socialActions" href="@Url.Action("Share", new { id = item.ID })"><i class="fa fa-fw fa-share @GetStatus(shared)"></i></a>
+                            <a class="socialActions" href="@Url.Action("Download", "Images", new { id = item.ID })"><i class="fa fa-fw fa-download"></i></a>
+                            <a class="likeIndex socialActions" href="@Url.Action("Like", "Images", new { id = item.ID })"><i class="fa fa-fw fa-heart @GetStatus(liked)"></i></a>
+                            <a class="shareIndex socialActions" href="@Url.Action("Share", "Images", new { id = item.ID })"><i class="fa fa-fw fa-share @GetStatus(shared)"></i></a>
                         </p>
                         <p>
-                            @Html.ActionLink("Details", "Details", new { id = item.ID }, new { @class = "btn btn-primary" })
-                            @Html.ActionLink("Edit", "Edit", new { id = item.ID }, new { @class = "btn btn-primary" })
-                            @Html.ActionLink("Delete", "Delete", new { id = item.ID }, new { @class = "btn btn-primary" })
+                            @Html.ActionLink("Details", "Details", "Images", new { id = item.ID }, new { @class = "btn btn-primary" })<text>&nbsp;</text>
+                            @if (User.IsInRole("Administrator"))
+                            {
+                                @Html.ActionLink("Edit", "Edit", "Images", new { id = item.ID }, new { @class = "btn btn-primary" })<text>&nbsp;</text>
+                                @Html.ActionLink("Delete", "Delete", "Images", new { id = item.ID }, new { @class = "btn btn-primary" })
+                            }
                         </p>
                     </div>
                 </div>

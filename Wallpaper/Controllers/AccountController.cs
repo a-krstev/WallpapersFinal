@@ -10,6 +10,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Wallpaper.Models;
 using PagedList;
+using Wallpaper.ViewModels;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Wallpaper.Controllers
 {
@@ -34,6 +36,7 @@ namespace Wallpaper.Controllers
         }
 
         //GET: Account/MyProfile
+        [Authorize]
         public ActionResult MyProfile(int? page)
         {
             // return a 404 if user browses to before the first page
@@ -62,6 +65,32 @@ namespace Wallpaper.Controllers
                 return PartialView("_SharedImages", listPaged);
             }
             return View(listPaged);
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public ActionResult AddUserToRole()
+        {
+            var model = new AddToRoleModel();
+            var roleStore = new RoleStore<IdentityRole>(db);
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+            model.roles = roleManager.Roles.Select(x => x.Name).ToList();
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult AddUserToRole(AddToRoleModel model)
+        {
+            try
+            {
+                var user = UserManager.FindByEmail(model.Email);
+                UserManager.RemoveFromRole(user.Id, "User");
+                UserManager.AddToRole(user.Id, model.selectedRole);
+                return RedirectToAction("Index", "Images");
+            }
+            catch (Exception ex)
+            {
+                return HttpNotFound();
+            }
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
@@ -197,6 +226,7 @@ namespace Wallpaper.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    UserManager.AddToRole(user.Id, "User");
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
 
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771

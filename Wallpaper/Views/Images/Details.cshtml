@@ -94,7 +94,10 @@
                 <a class="shareIndex socialActions" href="@Url.Action("Share", new { id = Model.ID })"><i class="fa fa-fw fa-share @GetStatus(shared)"></i></a>
             </p>
             <p>
-                @Html.ActionLink("Edit", "Edit", new { id = Model.ID }, new { @class = "btn btn-primary" })
+                @if (User.IsInRole("Administrator"))
+                {
+                    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }, new { @class = "btn btn-primary" })<text>&nbsp;</text>
+                }
                 @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
             </p>
         </div>
@@ -115,11 +118,11 @@
             {
                 if (action.Action == Wallpaper.Models.ActionType.Like)
                 {
-                    liked = true;
+                    liked1 = true;
                 }
                 if (action.Action == Wallpaper.Models.ActionType.Share)
                 {
-                    shared = true;
+                    shared1 = true;
                 }
             }
         }
@@ -136,9 +139,12 @@
                             <a class="shareIndex socialActions" href="@Url.Action("Share", new { id = item.ID })"><i class="fa fa-fw fa-share @GetStatus(shared1)"></i></a>
                         </p>
                         <p>
-                            @Html.ActionLink("Details", "Details", new { id = item.ID }, new { @class = "btn btn-primary" })
-                            @Html.ActionLink("Edit", "Edit", new { id = item.ID }, new { @class = "btn btn-primary" })
-                            @Html.ActionLink("Delete", "Delete", new { id = item.ID }, new { @class = "btn btn-primary" })
+                            @Html.ActionLink("Details", "Details", new { id = item.ID }, new { @class = "btn btn-primary" })<text>&nbsp;</text>
+                            @if (User.IsInRole("Administrator"))
+                            {
+                                @Html.ActionLink("Edit", "Edit", new { id = item.ID }, new { @class = "btn btn-primary" })<text>&nbsp;</text>
+                                @Html.ActionLink("Delete", "Delete", new { id = item.ID }, new { @class = "btn btn-primary" })
+                            }
                         </p>
                     </div>
                 </div>

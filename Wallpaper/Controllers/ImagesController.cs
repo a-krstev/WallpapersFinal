@@ -18,7 +18,6 @@ using System.Web.Caching;
 
 namespace Wallpaper.Controllers
 {
-    [Authorize]
     public class ImagesController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -39,7 +38,7 @@ namespace Wallpaper.Controllers
             ViewBag.Colors = db.Colors.ToList();
             ViewBag.Years = db.Years.ToList();
             ViewBag.BodyTypes = db.BodyTypes.ToList();
-            ViewBag.UserId = CurrentUser().ID;
+            //ViewBag.UserId = CurrentUser().ID;
 
             if (Brand != null || Color != null || Year != null || BodyType != null)
             {
@@ -122,7 +121,11 @@ namespace Wallpaper.Controllers
                     break;
             }
 
-            ViewBag.UserId = CurrentUser().ID;
+            ViewBag.UserId = -1;
+            if (User.Identity.IsAuthenticated)
+            {
+                ViewBag.UserId = CurrentUser().ID;
+            }
             int pageSize = 6;
             int pageNumber = (page ?? 1);
 
@@ -156,6 +159,7 @@ namespace Wallpaper.Controllers
         }
 
         // GET: Images/Details/5
+        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -167,6 +171,7 @@ namespace Wallpaper.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.UserId = CurrentUser().ID;
             RegisterAction(image, ActionType.View);
             return View(image);
         }
@@ -187,6 +192,7 @@ namespace Wallpaper.Controllers
         }
 
         // GET: Images/Like/5
+        [Authorize]
         public ActionResult Like(int? id, string TimeFrame)
         {
             DateTime time = DateTime.Now;
@@ -203,7 +209,7 @@ namespace Wallpaper.Controllers
             ToggleMyAction(id.Value, image, ActionType.Like);
 
             int numOfLikes = db.UserActions
-                               .AsEnumerable()
+                               .ToList()
                                .Where(ua => ua.Image.ID == id &&
                                       ua.Action == ActionType.Like &&
                                       CheckDate(TimeFrame, ua.Time, time))
@@ -213,6 +219,7 @@ namespace Wallpaper.Controllers
         }
 
         // GET: Images/Share/5
+        [Authorize]
         public ActionResult Share(int? id)
         {
             if (id == null)
@@ -240,7 +247,10 @@ namespace Wallpaper.Controllers
             {
                 return HttpNotFound();
             }
-            RegisterAction(image, ActionType.Download);
+            if (User.Identity.IsAuthenticated)
+            {
+                RegisterAction(image, ActionType.Download);
+            }
 
             byte[] thePictureAsBytes = Convert.FromBase64String(image.ImageEncoding);
 
@@ -254,7 +264,7 @@ namespace Wallpaper.Controllers
         }
 
         // GET: Images/Create
-        [Authorize]
+        [Authorize(Roles ="Administrator")]
         public ActionResult Create()
         {
             return View();
@@ -355,6 +365,7 @@ namespace Wallpaper.Controllers
         }
 
         // GET: Images/Edit/5
+        [Authorize(Roles ="Administrator")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -516,6 +527,7 @@ namespace Wallpaper.Controllers
         }
 
         // GET: Images/Delete/5
+        [Authorize(Roles = "Administrator")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -618,6 +630,7 @@ namespace Wallpaper.Controllers
                 new SelectListItem { Text = "ever", Value = "ever" }
             }, "Text", "Value");
 
+        [Authorize]
         public ActionResult Trending(string TimeFrame, int? page)
         {
             DateTime time = DateTime.Now;
@@ -669,6 +682,7 @@ namespace Wallpaper.Controllers
             return aggregateViews + aggregateOtherActions;
         }
 
+        [Authorize]
         public ActionResult Recommended(int? page)
         {
             // return a 404 if user browses to before the first page
